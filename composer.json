@@ -8,10 +8,11 @@
 	"license" : "MIT",
 	"type" : "project",
 	"require" : {
-		"php" : ">=7.0.0",
-		"fideloper/proxy" : "~3.3",
-		"laravel/framework" : "5.5.*",
-		"laravel/tinker" : "~1.0"
+		"php": ">=7.0.0",
+		"fideloper/proxy": "~3.3",
+		"laravel/framework": "5.5.*",
+		"laravel/passport": "~4.0",
+		"laravel/tinker": "~1.0"
 	},
 	"require-dev" : {
 		"filp/whoops" : "~2.0",
@@ -30,8 +31,11 @@
 		},
 		"files" : [
 			"app/Helpers/functions.php",
-			"app/Helpers/ErrorParams.php",
-			"app/Helpers/QiniuHelper.php"
+			"app/Helpers/Menu.php",
+			"app/Helpers/WxPay.php",
+			"app/Helpers/WxApp.php",
+			"app/Helpers/AESCrypt.php",
+			"app/Helpers/WxDataCrypt.php"
 		]
 	},
 	"autoload-dev" : {
@@ -51,5 +55,11 @@
 		"preferred-install" : "dist",
 		"sort-packages" : true,
 		"optimize-autoloader" : true
+	},
+	"repositories": {
+		"packagist": {
+			"type": "composer",
+			"url": "https://packagist.phpcomposer.com"
+		}
 	}
 }

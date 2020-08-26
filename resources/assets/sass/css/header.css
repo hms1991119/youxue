@@ -1,0 +1,80 @@
+/**
+* app公共部分样式
+*/
+.el-header {
+    padding: 0;
+    background-color: #409EFF;
+    min-width: 1000px;
+}
+
+.el-main {
+    padding: 20px;
+    background-color: #F5F7FA;
+    min-width: 800px
+}
+
+#head-el-menu .el-menu-item {
+    display: inline-block;
+    height: 80px;
+    line-height: 80px;
+    float: right;
+    border-bottom: none;
+}
+#head-el-menu .el-submenu{
+    float: right;
+}
+
+#head-el-menu .el-submenu__title{
+    display: inline-block;
+    height: 80px;
+    line-height: 80px;
+    border-bottom: none;
+}
+
+#head-el-menu .li-left {
+    float: left;
+    cursor: default;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+}
+
+.li-left:hover{
+    background-color:rgb(64,158,255) !important;
+}
+
+/*
+ * 滚动条
+ */
+/*定义滚动条高宽及背景
+  高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: #FFFFFF;
+}
+
+/*定义滚动条轨道
+  内阴影+圆角*/
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    background-color: #F5F5F5;
+}
+
+/*
+ * 滚动条凹槽的颜色，还可以设置边框属性
+ */
+::-webkit-scrollbar-track-piece {
+    background-color: #f8f8f8;
+}
+
+/*定义滑块
+  内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #C0C4CC;
+}

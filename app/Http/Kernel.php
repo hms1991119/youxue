@@ -10,6 +10,7 @@ class Kernel extends HttpKernel
      * The application's global HTTP middleware stack.
      *
      * These middleware are run during every request to your application.
+     * 公共中间件
      *
      * @var array
      */
@@ -23,6 +24,7 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware groups.
+     * web端和api端分别不同的中间件
      *
      * @var array
      */
@@ -33,7 +35,8 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             //session
             \Illuminate\Session\Middleware\StartSession::class,
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            //用户认证
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             //csrf防护
             //\App\Http\Middleware\VerifyCsrfToken::class,
@@ -41,8 +44,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
-            'bindings',
+            //session
+            \Illuminate\Session\Middleware\StartSession::class,
+            //'throttle:60,1',
+            //'bindings',
         ],
     ];
 

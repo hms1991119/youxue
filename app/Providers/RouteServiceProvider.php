@@ -14,6 +14,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
+    
     protected $namespace = 'App\Http\Controllers';
 
     /**
@@ -24,7 +25,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
+        
         parent::boot();
     }
 
@@ -51,6 +52,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
+        //添加web路由的中间件
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));

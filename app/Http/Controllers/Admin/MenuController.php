@@ -1,62 +1,72 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\AdminRole;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
-class MenuController extends Controller
-{
-    public function list(Request $request)
-    {
-        $parent_list=DB::table('module')->select('id','module_name')->where('pid',0)->orderBy('module_sort','asc')->get();
-        $parent_hash=array();
-        if(!empty($parent_list)){
-            foreach($parent_list as $item){
-                $parent_hash[$item->id]=$item->module_name;
+class MenuController extends Controller{
+    
+    /*
+     * vue端获取菜单列表
+     */
+    public function menulist(){
+        $input=$this->input;
+        if($input['role_id']=='null'){
+            return $this->vue_return_json(0);
+        }
+        $role_power=AdminRole::find($input['role_id'],['power_str'])->toArray();
+        if(empty($role_power)){
+            return $this->vue_return_json(0);
+        }
+        $role_power=json_decode($role_power['power_str'],true);
+        $menu_list=\Menu::getMenuList();
+        foreach($menu_list as $key=>&$item){
+            foreach($item['child_items'] as $k=>$child){
+                if(!in_array($child['id'],$role_power)){
+                    unset($item['child_items'][$k]);
+                }
+            }
+            if(count($item['child_items'])==0){
+                unset($menu_list[$key]);
             }
         }
-        if($request->ajax()){
-            $pid=$request->input('pid',0);
-            $pageNumber=$request->input('pageNumber',0);
-            $pageSize=$request->input('pageSize',20);
-            $query=DB::table('module');
-            $query_count=DB::table('module');
-            if($pid!=0){
-                $query->where('pid',$pid);
-                $query_count->where('pid',$pid);
-            }
-            $list=$query->orderBy('module_sort','asc')->offset($pageNumber)->limit($pageSize)->get();
-            $count=$query_count->count();
-            $send_list=array();
-            if(!empty($list)){
-                foreach($list as $key=>$item){
-                        $temp=array();
-                        $temp['index']=$key+1;
-                        $temp['module_name']=$item->module_name;
-                        $temp['url']=$item->url;
-                        $temp['status_name']=$item->status==1?'正常':'禁用';
-                        $temp['pid']=$item->pid;
-                        $send_list[]=$temp;
-                }
-                foreach($send_list as $key=>$item){
-                    if($item['pid']==0){
-                        $send_list[$key]['parent_name']='系统';
-                    }else{
-                        $send_list[$key]['parent_name']=$parent_hash[$item['pid']];
+        return response()->json([
+            'code' => 1,
+            'list' => $menu_list
+        ]);
+    }
+
+    //获取全部菜单
+    public function allmenulist(Request $request)
+    {
+        $menu_list=\Menu::getMenuList();
+        $send_list=[];
+        if(!empty($menu_list)){
+            $total_list=[];
+            foreach($menu_list as $item){
+                $temp=[];
+                $temp['id']=$item['id'];
+                $temp['label']=$item['module_name'];
+                if(!empty($item['child_items'])){
+                    foreach($item['child_items'] as $child){
+                        $children=[];
+                        $children['id']=$child['id'];
+                        $children['label']=$child['module_name'];
+                        $temp['children'][]=$children;
                     }
                 }
+                array_push($total_list,$temp);
             }
-            $returnData=[
-                'rows' => $send_list,
-                'total' => $count
-            ];
-            return response()->json($returnData);
+            //添加一个全部,id为-1
+            $send_list[0]['children']=$total_list;
+            $send_list[0]['id']=-1;
+            $send_list[0]['label']='全部';
         }
-        
-        return view('admin.menu.index',['parent_hash'=>$parent_hash]);
+        return response()->json([
+            'code' => 1,
+            'list' => $send_list
+        ]);
     }
 }

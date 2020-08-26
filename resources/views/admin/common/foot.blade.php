@@ -16,6 +16,8 @@
 <script src="{{ asset('js/plugins/validate/messages_zh.min.js') }}"></script>
 <script src="{{ asset('js/plugins/laydate/laydate.js') }}"></script>
 <script src="{{ asset('js/plugins/suggest/bootstrap-suggest.min.js') }}"></script>
+<!-- vue -->
+<script src="{{ asset('js/vue.js') }}"></script>
 
 <!-- 富文本 -->
 <!-- <script type="text/javascript" src="/um/third-party/template.min.js"></script>

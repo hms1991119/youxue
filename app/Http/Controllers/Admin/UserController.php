@@ -4,12 +4,19 @@
  */
 namespace App\Http\Controllers\Admin;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Psy\Util\Str;
 
 class UserController extends Controller
 {
+    public function userlist(Request $request){
+        //查询用户列表
+        $list=User::all();
+    }
+
     public function list(Request $request)
     {
         if($request->ajax()){

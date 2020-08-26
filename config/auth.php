@@ -48,6 +48,7 @@ return [
     */
     //身份验证的方式，web默认是使用session   api默认是使用token
     //指定看守器，默认是使用web 即通过session的方式来进行看守，就是判断的标准吧应该是
+    //providers 应该就是提供者
     'guards' => [
         'web' => [
             'driver' => 'session',
@@ -86,16 +87,11 @@ return [
 
     'providers' => [
         'users' => [
-            //'driver' => 'eloquent',      //ORM的一个东西，操作数据库
-            //'model' => App\User::class,
+            //'driver' => 'eloquent',      //ORM的一个东西，操作数据库，校验登录
+            //'model' => App\AdminAccount::class,
             'driver' => 'database',
-            'table' => 'adminuser',
+            'table' => 'admin_accounts',
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*

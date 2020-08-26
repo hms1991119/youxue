@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AdminRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -9,90 +10,94 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
-    public function list(Request $request)
-    {
-        if($request->ajax()){
-            $list=DB::table('role')->get();
-            $send_list=array();
-            if(!empty($list)){
-                foreach($list as $key=>$item){
-                    $temp=array();
-                    $temp['index']=$key+1;
-                    $temp['id']=$item->id;
-                    $temp['role_name']=$item->role_name;
-                    $send_list[]=$temp;
-                }
+    private $model_instance=AdminRole::class;
+
+    public function rolelist(){
+        $input=$this->input;
+        $current_page=$input['current_page']<=1?1:$input['current_page'];
+        $page_size=$input['page_size'];
+        $start=($current_page-1)*$page_size;
+        $list=AdminRole::offset($start)->limit($page_size)->get()->toArray();
+        $send_list=[];
+        if(!empty($list)){
+            foreach($list as $key=>$item){
+                $temp=[];
+                $temp['index']=$key+1;
+                $temp['id']=$item['id'];
+                $temp['name']=$item['name'];
+                $temp['create_date']=is_null($item['created_at'])?'':substr($item['created_at'],0,10);
+                $temp['enabled']=$item['enabled']==1?'正常':'禁用';
+                array_push($send_list,$temp);
             }
-            $count=DB::table('role')->count();
-            $returnData=[
-               'rows'=>$send_list,
-               'total'=>$count
-            ];
-            return response()->json($returnData);
         }
-        return view('admin.role.index');
+        $total_count=AdminRole::count();
+        return response()->json([
+            'code' => 1,
+            'list' => $send_list,
+            'total_count' => $total_count
+        ]);
     }
-    
-    //新增/编辑
-    public function edit(Request $request)
+
+    //获取全部角色
+    public function allrolelist()
     {
-        $id=$request->input('id','');
-        if($request->isMethod('post')){
-            $menus_str=$request->input('menus','');
-            $role_name=$request->input('role_name');
-            $menus_arr=array();
-            if($menus_str!=''){
-                $menus_str=substr($menus_str,0,-1);
-            }
-            if($id!=''){
-                $res=DB::table('role')->where('id',$id)->update(['role_name'=>$role_name,'power_str'=>$menus_str]);
-            }else{
-                $res=DB::table('role')->insert(['role_name'=>$role_name,'power_str'=>$menus_str]);
-            }
-            if($res>=0){
-                $return_data=create_return_arr(\ErrorParams::ERRNO_SUCCESS,\ErrorParams::ERRMSG_SUCCESS);
-            }else{
-                $return_data=create_return_arr(\ErrorParams::ERRNO_SERVER,\ErrorParams::ERRMSG_SERVER);
-            }
-            return response()->json($return_data);
-        }
-        $info=array();
-        $power_list=array();
-        if($id!=''){
-            $info=DB::table('role')->where('id',$id)->first();
-        }
-        if(!empty($info) && $info->power_str!=''){
-            $power_list=explode(',',$info->power_str);
-        }
-        // 全部菜单
-        $menu_list=DB::table('module')->select('id','module_name','pid')->orderBy('module_sort','asc')->get();
-        if(!empty($power_list)){
-            foreach($menu_list as $item){
-               if(in_array($item->id,$power_list)){
-                       $item->checked=1;
-               }
+        $list=AdminRole::where('enabled',1)->get()->toArray();
+        $send_list=[];
+        if(!empty($list)){
+            foreach($list as $item){
+                $temp=[];
+                $temp['value']=$item['id'];
+                $temp['label']=$item['name'];
+                array_push($send_list,$temp);
             }
         }
-        return view('admin.role.edit',['info'=>$info,'menu_list'=>$menu_list]);
+        return response()->json([
+            'code' => 1,
+            'list' => $send_list
+        ]);
     }
-    
+
+    public function editrole()
+    {
+        $input=$this->input;
+        $code=$this->edit_instance($this->model_instance,$input);
+        return $this->vue_return_json($code);
+    }
+
+    public function roleinfo()
+    {
+        $info=$this->input;
+        if(isset($info['id'])){
+            $info=AdminRole::find($info['id'])->toArray();
+            $info['power_str']=is_null($info['power_str'])?[]:json_decode($info['power_str'],true);
+            return response()->json([
+                'code' => 1,
+                'info' => $info
+            ]);
+        }
+        return response()->json([
+            'code' => 0
+        ]);
+    }
+
     //删除
-    public function del(Request $request)
+    public function delrole()
     {
-        $id=$request->input('id','');
+        $input=$this->input;
         //1始终是超级管理员
-        if($id==1){
-            $return_data=create_return_arr(\ErrorParams::ERRNO_CAN_NOT_DEL_ADMIN,\ErrorParams::ERRMSG_CAN_NOT_DEL_ADMIN);
-            return response()->json($return_data);
+        if(!isset($input['id']) || $input['id']==1){
+            return response()->json([
+                'code' => 0
+            ]);
         }
-        if($id!=''){
-            $res=DB::table('role')->where('id',$id)->delete();
-            if($res){
-                $return_data=create_return_arr(\ErrorParams::ERRNO_SUCCESS,\ErrorParams::ERRMSG_SUCCESS);
-            }else{
-                $return_data=create_return_arr(\ErrorParams::ERRNO_SERVER,\ErrorParams::ERRMSG_SERVER);
-            }
-            return response()->json($return_data);
+        $res=AdminRole::where('id',$input['id'])->delete();
+        if($res){
+            return response()->json([
+                'code' => 1
+            ]);
         }
+        return response()->json([
+            'code' => 0
+        ]);
     }
 }

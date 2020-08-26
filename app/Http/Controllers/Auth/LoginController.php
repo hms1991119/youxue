@@ -15,6 +15,9 @@ class LoginController extends Controller
     | This controller handles authenticating users for the application and
     | redirecting them to your home screen. The controller uses a trait
     | to conveniently provide its functionality to your applications.
+    |此控制器处理应用程序和
+    |将它们重定向到主屏幕。控制器使用特征
+    |为您的应用程序方便地提供其功能。
     |
     */
 
@@ -25,7 +28,12 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/xxx';
+
+    public function username()
+    {
+        return 'username';
+    }
 
     /**
      * Create a new controller instance.
@@ -34,12 +42,17 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        //var_dump(LARAVEL_START);
-        //var_dump(microtime(true));exit;
         //验证这是写在guest这个中间件里面么？？？CNM，这里except是指 方法名
         $this->middleware('guest')->except('logout');
     }
-    
+
     //自定义属性
-    
+
+    //可以自定义一个redirectTo来覆盖自带的跳转
+    public function redirectTo()
+    {
+        //echo '这里';exit;
+        //这是登录成功之后的跳转
+        return '/admin/login';
+    }
 }

@@ -13,9 +13,16 @@
         "axios": "^0.17",
         "bootstrap-sass": "^3.3.7",
         "cross-env": "^5.1",
+        "foundation-sites": "^6.6.3",
         "jquery": "^3.2",
         "laravel-mix": "^1.0",
         "lodash": "^4.17.4",
-        "vue": "^2.5.7"
+        "vue": "^2.5.7",
+        "vue-router": "^3.4.3",
+        "vuex": "^3.5.1"
+    },
+    "dependencies": {
+        "element-ui": "^2.13.2",
+        "qs": "^6.9.4"
     }
 }

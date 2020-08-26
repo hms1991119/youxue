@@ -1,0 +1,36 @@
+/**
+ * 列表页面样式
+ */
+.box-card{
+    margin:0 auto;
+    width:100%;
+}
+.yx_table{
+    width: 100%;
+}
+.yx_table th{
+    text-align: center;
+}
+.yx_table tr td{
+    text-align: center;
+}
+.yx_line{
+    border-bottom:solid 1px #DCDFE6;
+    margin-top:15px;
+}
+.yx_el_row{
+    margin:10px 0 20px 0;
+}
+/*
+* 查询按钮，靠右
+*/
+.search_btn{
+    text-align: right;
+}
+/*
+* 分页div
+*/
+.yx_page{
+    padding:0px;
+    margin-top:20px;
+}

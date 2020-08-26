@@ -1,0 +1,15 @@
+/**
+  * 登录页面样式，待后续完善
+  */
+#login {
+    background-image: url(../images/login_background.jpg);
+    background-size: 100% 100%;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+}
+.my-card{
+    margin:0 auto;
+    width:400px;
+    margin-top:150px;
+}
